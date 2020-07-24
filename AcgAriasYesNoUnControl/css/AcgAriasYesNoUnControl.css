@@ -1,11 +1,26 @@
+.acgContainer {
+    display: flex;
+    height: 32px;
+}
+
 .acgYesNoUnControl {
     padding-left: 0.5em;
     padding-right: 0.5em;
     font-size: 1rem;
     font-weight: 600;
-    
+    height: 100%;
+    width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
-    
+    border: 0;
+    outline: none !important;
 }
+
+.acgContainer:hover, .acgContainer:focus, .acgContainer:active, .acgContainer:focus-within {
+    border: 1px solid #000;
+}
+
+/* .control-container {
+    border: none !important;
+} */

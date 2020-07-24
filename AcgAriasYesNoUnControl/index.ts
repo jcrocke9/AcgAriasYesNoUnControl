@@ -2,8 +2,8 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 
 export class AcgAriasYesNoUnControl implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 	// Value of the field is stored and used inside the component
+	private envYesValue = "Yes";
 	private value: number | null;
-	private label: string | undefined;
 	private valueOfYes: number | null;
 	private options: ComponentFramework.PropertyHelper.OptionMetadata[] | undefined;
 	private selectedIndex: number;
@@ -12,8 +12,6 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	private selectElement: HTMLSelectElement;
 	private container: HTMLDivElement;
 	private context: ComponentFramework.Context<IInputs>;
-	// Event Handler 'refreshData' reference
-	private _refreshData: EventListenerOrEventListenerObject;
 	private _refreshIndex: any;
 	constructor() {
 
@@ -30,38 +28,37 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void, state: ComponentFramework.Dictionary, container: HTMLDivElement) {
 		this.context = context;
 		this.container = document.createElement("div");
-		this._refreshData = this.refreshData.bind(this);
+		this.container.setAttribute("class", "acgContainer")
 		this._refreshIndex = this.refreshIndex.bind(this);
 		this.notifyOutputChanged = notifyOutputChanged;
 		this.value = context.parameters.acgAriasYesNoUnControl.raw;
-
+		console.log("the init value: ", this.value);
 		this.options = context.parameters.acgAriasYesNoUnControl.attributes?.Options;
-		console.log(this.options);
+		//console.log(this.options);
 		this.selectElement = document.createElement("select");
-		//this.selectElement.appendChild(new Option("---", (-1).toString()));
+		var zeroEle = this.selectElement.appendChild(new Option("---", (-1).toString()));
+		zeroEle.style.backgroundColor = "#ffffff";
 		if (this.options) {
 			if (this.options.length > 0) {
 				this.options.map((option: ComponentFramework.PropertyHelper.OptionMetadata, index: number) => {
 					var ele = this.selectElement.appendChild(new Option(option.Label, option.Value.toString()));
-
-					if (option.Label === "Yes") {
-						//console.log(option.Value);
+					ele.style.backgroundColor = "#ffffff";
+					if (option.Label === this.envYesValue) {
+						//console.log("green option: ", option.Value);
 						this.valueOfYes = option.Value;
 					}
 					if (this.value === option.Value) {
 						this.selectedIndex = index;
-						console.log("selectedIndex ", this.selectedIndex);
+						//console.log("selectedIndex ", this.selectedIndex);
 						this.selectElement.selectedIndex = index;
-						ele.selected = true;
+						ele.dataset.selected = "true";
 					}
 				})
 			}
 		}
-		this.selectElement.options[this.selectedIndex].selected = true;
-		this.selectElement.value = this.value?.toString() || "";
-		//this.selectElement.addEventListener("input", this._refreshData);
+		//console.log(this.selectElement.options);
+		this.selectElement.value = this.value?.toString() || "-1";
 		this.selectElement.addEventListener('change', this._refreshIndex);
-
 		this.selectElement.setAttribute("class", "acgYesNoUnControl");
 		this.container.appendChild(this.selectElement);
 		container.appendChild(this.container);
@@ -69,18 +66,21 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 
 	public refreshIndex(): void {
 		var index = this.selectElement.selectedIndex.valueOf();
-		console.log("refreshIndex says: ", index);
+		//console.log("refreshIndex says: ", index);
 		this.selectedIndex = index;
 		this.selectElement.selectedIndex = index;
+		this.selectElement.options[this.selectedIndex].dataset.selected = "true";
+		for (let index = 0; index < this.selectElement.options.length; index++) {
+			const element = this.selectElement.options[index];
+			if (index != this.selectedIndex) {
+				if (element.getAttribute("data-selected")) {
+					element.removeAttribute("data-selected");
+				}
+			}
+		}
 		this.value = (this.selectElement.value as any) as number;
 		this.notifyOutputChanged();
 	}
-
-	public refreshData(evt: Event): void {
-		this.value = (this.selectElement.value as any) as number;
-		this.notifyOutputChanged();
-	}
-
 
 	/**
 	 * Called when any value in the property bag has changed. This includes field values, data-sets, global values such as container height and width, offline status, control metadata values such as label, visible, etc.
@@ -94,29 +94,11 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 			: context.parameters.acgAriasYesNoUnControl.raw === 0
 				? 0
 				: -1;
-		
-		this.selectElement.value =
-			context.parameters.acgAriasYesNoUnControl.formatted
-				? context.parameters.acgAriasYesNoUnControl.formatted
-				: context.parameters.acgAriasYesNoUnControl.formatted === "0"
-					? "0"
-					: "";
-		
-		/* this.selectedIndex =
-			this.selectElement.selectedIndex
-				? this.selectElement.selectedIndex
-				: this.selectedIndex === 0
-					? this.selectedIndex = 0
-					: -1; */
-		console.log("value changed to ", this.value);
-		console.log("index changed to ", this.selectedIndex);
-		this.selectElement.options[this.selectedIndex].selected = true;
 		if (this.value === this.valueOfYes) {
 			this.selectElement.style.backgroundColor = "#8cbd18";
 		} else {
 			this.selectElement.style.backgroundColor = "#ffffff";
 		}
-		console.log("view updated;");
 	}
 
 	/** 
@@ -137,6 +119,6 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	 */
 	public destroy(): void {
 		// Add code to cleanup control if necessary
-		this.selectElement.removeEventListener("input", this._refreshData);
+		this.selectElement.removeEventListener("change", this._refreshIndex);
 	}
 }

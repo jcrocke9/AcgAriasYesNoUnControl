@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="AcgInnovation" constructor="AcgAriasYesNoUnControl" version="1.3.0" display-name-key="AcgAriasYesNoUnControl" description-key="Yes No Unknown Dropdown that colors Yes green" control-type="standard">
+  <control namespace="AcgInnovation" constructor="AcgAriasYesNoUnControl" version="1.7.0" display-name-key="AcgAriasYesNoUnControl" description-key="Yes No Unknown Dropdown that colors Yes green" control-type="standard">
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->
     <property name="acgAriasYesNoUnControl" display-name-key="AcgAriasYesNoUnControl" description-key="Yes No Unknown Dropdown that colors Yes green" of-type="OptionSet" usage="bound" required="false" />
     <resources>
