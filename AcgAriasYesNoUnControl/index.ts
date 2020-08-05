@@ -32,7 +32,7 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 		this._refreshIndex = this.refreshIndex.bind(this);
 		this.notifyOutputChanged = notifyOutputChanged;
 		this.value = context.parameters.acgAriasYesNoUnControl.raw;
-		console.log("the init value: ", this.value);
+		//console.log("the init value: ", this.value);
 		this.options = context.parameters.acgAriasYesNoUnControl.attributes?.Options;
 		//console.log(this.options);
 		this.selectElement = document.createElement("select");
