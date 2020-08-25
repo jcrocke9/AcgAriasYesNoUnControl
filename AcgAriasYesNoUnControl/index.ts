@@ -27,16 +27,19 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	 */
 	public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void, state: ComponentFramework.Dictionary, container: HTMLDivElement) {
 		this.context = context;
+		console.log("1.0.0.7");
 		this.container = document.createElement("div");
 		this.container.setAttribute("class", "acgContainer")
 		this._refreshIndex = this.refreshIndex.bind(this);
 		this.notifyOutputChanged = notifyOutputChanged;
 		this.value = context.parameters.acgAriasYesNoUnControl.raw;
-		console.log("the init value: ", this.value);
+		//console.log("the init value: ", this.value);
 		this.options = context.parameters.acgAriasYesNoUnControl.attributes?.Options;
-		console.log(this.options);
+		//console.log(this.options);
 		this.selectElement = document.createElement("select");
-		var zeroEle = this.selectElement.appendChild(new Option("---", (-1).toString()));
+		this.selectElement.addEventListener('change', this._refreshIndex);
+		// @ts-ignore
+		var zeroEle = this.selectElement.appendChild(new Option("---", null));
 		zeroEle.style.backgroundColor = "#ffffff";
 		if (this.options) {
 			if (this.options.length > 0) {
@@ -48,17 +51,17 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 						this.valueOfYes = option.Value;
 					}
 					if (this.value === option.Value) {
-						this.selectedIndex = index;
+						//this.selectedIndex = index;
 						//console.log("selectedIndex ", this.selectedIndex);
-						this.selectElement.selectedIndex = index;
+						//this.selectElement.selectedIndex = index;
 						ele.dataset.selected = "true";
 					}
 				})
 			}
 		}
 		//console.log(this.selectElement.options);
-		this.selectElement.value = this.value?.toString() || "-1";
-		this.selectElement.addEventListener('change', this._refreshIndex);
+		// @ts-ignore
+		this.selectElement.value = this.value?.toString() || null;
 		this.selectElement.setAttribute("class", "acgYesNoUnControl");
 		this.container.appendChild(this.selectElement);
 		container.appendChild(this.container);
@@ -66,7 +69,7 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	}
 
 	public refreshIndex(): void {
-		var index = this.selectElement.selectedIndex.valueOf();
+		/* var index = this.selectElement.selectedIndex.valueOf();
 		//console.log("refreshIndex says: ", index);
 		this.selectedIndex = index;
 		this.selectElement.selectedIndex = index;
@@ -78,8 +81,11 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 					element.removeAttribute("data-selected");
 				}
 			}
-		}
+		}*/
 		this.value = (this.selectElement.value as any) as number;
+		if (isNaN(this.value)) {
+			this.value = null;
+		}
 		this.notifyOutputChanged();
 	}
 
@@ -90,11 +96,15 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	public updateView(context: ComponentFramework.Context<IInputs>): void {
 		this.context = context;
 		// storing the latest context from the control.
+
+		// @ts-ignore
 		this.value = context.parameters.acgAriasYesNoUnControl.raw
 			? context.parameters.acgAriasYesNoUnControl.raw
-			: context.parameters.acgAriasYesNoUnControl.raw === 0
-				? 0
-				: -1;
+			: null;
+			/**context.parameters.acgAriasYesNoUnControl.raw === 0
+				? null
+				:  */
+		//console.log(context.parameters.acgAriasYesNoUnControl.raw);
 		if (this.value === this.valueOfYes) {
 			this.selectElement.style.backgroundColor = "#8cbd18";
 		} else {
@@ -107,11 +117,18 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	 * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as “bound” or “output”
 	 */
 	public getOutputs(): IOutputs {
-		if (this.value) {
-			return {
-				acgAriasYesNoUnControl: this.value
-			}
-		} else { return {} }
+		// @ts-ignore
+		return { acgAriasYesNoUnControl: this.value }
+
+		/* console.log(this.value);
+		if (this.value === null) {
+			return { acgAriasYesNoUnControl: null }
+		} else if (this.value === 0) {
+			return { acgAriasYesNoUnControl: null }
+		} else if (this.value > 0) {
+			return { acgAriasYesNoUnControl: this.value }
+		} 
+		else { return {} } */
 	}
 
 	/** 
