@@ -27,7 +27,7 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	 */
 	public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void, state: ComponentFramework.Dictionary, container: HTMLDivElement) {
 		this.context = context;
-		console.log("1.0.0.7");
+		//console.log("1.0.0.12");
 		this.container = document.createElement("div");
 		this.container.setAttribute("class", "acgContainer")
 		this._refreshIndex = this.refreshIndex.bind(this);
@@ -51,41 +51,21 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 						this.valueOfYes = option.Value;
 					}
 					if (this.value === option.Value) {
-						//this.selectedIndex = index;
-						//console.log("selectedIndex ", this.selectedIndex);
-						//this.selectElement.selectedIndex = index;
 						ele.dataset.selected = "true";
 					}
 				})
 			}
 		}
-		//console.log(this.selectElement.options);
 		// @ts-ignore
 		this.selectElement.value = this.value?.toString() || null;
 		this.selectElement.setAttribute("class", "acgYesNoUnControl");
 		this.container.appendChild(this.selectElement);
 		container.appendChild(this.container);
-		this.notifyOutputChanged();
+		//this.notifyOutputChanged();
 	}
 
 	public refreshIndex(): void {
-		/* var index = this.selectElement.selectedIndex.valueOf();
-		//console.log("refreshIndex says: ", index);
-		this.selectedIndex = index;
-		this.selectElement.selectedIndex = index;
-		this.selectElement.options[this.selectedIndex].dataset.selected = "true";
-		for (let index = 0; index < this.selectElement.options.length; index++) {
-			const element = this.selectElement.options[index];
-			if (index != this.selectedIndex) {
-				if (element.getAttribute("data-selected")) {
-					element.removeAttribute("data-selected");
-				}
-			}
-		}*/
-		this.value = (this.selectElement.value as any) as number;
-		if (isNaN(this.value)) {
-			this.value = null;
-		}
+		this.value = this.selectElement.value ? (this.selectElement.value as any) as number : null;
 		this.notifyOutputChanged();
 	}
 
@@ -96,15 +76,10 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	public updateView(context: ComponentFramework.Context<IInputs>): void {
 		this.context = context;
 		// storing the latest context from the control.
-
-		// @ts-ignore
+		
 		this.value = context.parameters.acgAriasYesNoUnControl.raw
 			? context.parameters.acgAriasYesNoUnControl.raw
 			: null;
-			/**context.parameters.acgAriasYesNoUnControl.raw === 0
-				? null
-				:  */
-		//console.log(context.parameters.acgAriasYesNoUnControl.raw);
 		if (this.value === this.valueOfYes) {
 			this.selectElement.style.backgroundColor = "#8cbd18";
 		} else {
@@ -119,16 +94,6 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	public getOutputs(): IOutputs {
 		// @ts-ignore
 		return { acgAriasYesNoUnControl: this.value }
-
-		/* console.log(this.value);
-		if (this.value === null) {
-			return { acgAriasYesNoUnControl: null }
-		} else if (this.value === 0) {
-			return { acgAriasYesNoUnControl: null }
-		} else if (this.value > 0) {
-			return { acgAriasYesNoUnControl: this.value }
-		} 
-		else { return {} } */
 	}
 
 	/** 
