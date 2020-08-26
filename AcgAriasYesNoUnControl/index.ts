@@ -76,7 +76,10 @@ export class AcgAriasYesNoUnControl implements ComponentFramework.StandardContro
 	public updateView(context: ComponentFramework.Context<IInputs>): void {
 		this.context = context;
 		// storing the latest context from the control.
-		
+		// @ts-ignore
+		this.selectElement.value = context.parameters.acgAriasYesNoUnControl.raw
+			? context.parameters.acgAriasYesNoUnControl.raw
+			: null;
 		this.value = context.parameters.acgAriasYesNoUnControl.raw
 			? context.parameters.acgAriasYesNoUnControl.raw
 			: null;
